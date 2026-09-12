@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block head_title %}Manutenção · CW Transportadora{% endblock %}
+{% block title %}Manutenção{% endblock %}
+{% block content %}
+{% if erro %}<div class="alert error">{{ erro }}</div>{% endif %}{% if ok %}<div class="alert success">{{ ok }}</div>{% endif %}
+<div class="cards"><div class="card"><small>Ordens</small><strong>{{ total }}</strong></div><div class="card"><small>Em aberto</small><strong>{{ abertos }}</strong></div><div class="card"><small>Custo total</small><strong>R$ {{ '%.2f'|format(custo) }}</strong></div></div>
+<div class="panel"><h2>Nova manutenção</h2><form method="post" action="/manutencao/criar" class="grid-form">{{ csrf_input(request) }}
+<label>Data<input name="data_manutencao" value="{{ request.query_params.get('data') or '' }}" placeholder="dd/mm/aaaa" required></label>
+<label>Veículo<select name="veiculo" required>{% for v in veiculos %}<option value="{{ v.placa }}">{{ v.placa }} · {{ v.modelo }}</option>{% endfor %}</select></label>
+<label>KM atual<input type="number" step="0.1" name="km_atual" value="0"></label><label>Tipo<input name="tipo" placeholder="Preventiva, corretiva..."></label>
+<label class="wide">Descrição<input name="descricao"></label><label>Oficina<input name="oficina"></label><label>Valor<input type="number" step="0.01" name="valor" value="0"></label>
+<label>Próxima revisão KM<input type="number" step="0.1" name="proxima_revisao_km" value="0"></label><label>Status<select name="status"><option>Pendente</option><option>Em andamento</option><option>Concluída</option></select></label><label class="wide">Observação<input name="observacao"></label>
+<button class="primary">Registrar manutenção</button></form></div>
+<div class="panel"><div class="panel-head"><h2>Histórico</h2><form method="get"><input name="busca" value="{{ busca }}" placeholder="Buscar veículo, oficina, tipo ou descrição"><button>Buscar</button></form></div>
+<div class="table-wrap"><table><thead><tr><th>ID</th><th>Data</th><th>Veículo</th><th>Serviço</th><th>Oficina</th><th>Valor</th><th>Status</th><th>Ações</th></tr></thead><tbody>
+{% for m in manutencoes %}<tr><td>#{{ m.id }}</td><td>{{ m.data }}</td><td><b>{{ m.veiculo }}</b><br><small>{{ m.km }} km</small></td><td>{{ m.tipo or '—' }}<br><small>{{ m.descricao or '' }}</small></td><td>{{ m.oficina or '—' }}</td><td>R$ {{ '%.2f'|format(m.valor or 0) }}</td><td>{{ m.status }}</td><td><form method="post" action="/manutencao/{{ m.id }}/status" style="display:inline">{{ csrf_input(request) }}<select name="status"><option {% if m.status=='Pendente' %}selected{% endif %}>Pendente</option><option {% if m.status=='Em andamento' %}selected{% endif %}>Em andamento</option><option {% if m.status=='Concluída' %}selected{% endif %}>Concluída</option></select><button>Salvar</button></form> <form method="post" action="/manutencao/{{ m.id }}/excluir" style="display:inline">{{ csrf_input(request) }}<button class="danger">Excluir</button></form></td></tr>{% else %}<tr><td colspan="8">Nenhuma manutenção encontrada.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

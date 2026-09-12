@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block head_title %}Funcionários — CW Transportadora{% endblock %}
+{% block title %}Funcionários{% endblock %}
+{% block content %}
+{% if erro %}<div class="alert error">{{ erro }}</div>{% endif %}{% if ok %}<div class="alert success">{{ ok }}</div>{% endif %}
+<div class="cards">
+  <div class="card"><small>Funcionários</small><strong>{{ funcionarios|length }}</strong></div>
+  <div class="card"><small>Ativos</small><strong>{{ ativos }}</strong></div>
+  <div class="card"><small>Folha do mês</small><strong>R$ {{ '%.2f'|format(total_folha|float) }}</strong></div>
+</div>
+<div class="panel">
+  <div class="panel-head"><h2>Novo funcionário</h2><form method="get"><input name="busca" value="{{ busca }}" placeholder="Buscar nome, cargo ou telefone"></form></div>
+  <form method="post" action="/funcionarios/salvar" class="grid-form">{{ csrf_input(request) }}
+    <label>Nome<input name="nome" required></label><label>Cargo<input name="cargo" required></label><label>Telefone<input name="telefone"></label>
+    <label>Data de admissão<input type="date" name="data_admissao"></label><label>Salário<input type="number" step="0.01" name="salario" value="0"></label><label>Vale-refeição<input type="number" step="0.01" name="vale_refeicao" value="0"></label>
+    <label>Status<select name="status"><option>Ativo</option><option>Inativo</option></select></label><div></div><button class="primary">Cadastrar</button>
+  </form>
+</div>
+<div class="panel table-panel"><div class="panel-head"><h2>Equipe</h2></div><div class="table-wrap"><table><thead><tr><th>Nome</th><th>Cargo</th><th>Telefone</th><th>Admissão</th><th>Salário</th><th>Status</th><th>Ações</th></tr></thead><tbody>
+{% for f in funcionarios %}<tr><td>{{ f[1] }}</td><td>{{ f[2] }}</td><td>{{ f[3] or '—' }}</td><td>{{ f[4] or '—' }}</td><td>R$ {{ '%.2f'|format(f[5]|float) }}</td><td><span class="badge">{{ f[7] }}</span></td><td><a href="/funcionarios/{{ f[0] }}">Editar</a><form class="inline" method="post" action="/funcionarios/{{ f[0] }}/excluir" onsubmit="return confirm('Excluir funcionário e seus registros de folha?')">{{ csrf_input(request) }}<button class="danger">Excluir</button></form></td></tr>{% else %}<tr><td colspan="7" class="muted">Nenhum funcionário encontrado.</td></tr>{% endfor %}
+</tbody></table></div></div>
+<div class="panel"><div class="panel-head"><h2>Folha mensal</h2><form method="get" class="inline"><input type="hidden" name="busca" value="{{ busca }}"><select name="mes"><option value="01" {% if mes=='01' %}selected{% endif %}>Janeiro</option><option value="02" {% if mes=='02' %}selected{% endif %}>Fevereiro</option><option value="03" {% if mes=='03' %}selected{% endif %}>Março</option><option value="04" {% if mes=='04' %}selected{% endif %}>Abril</option><option value="05" {% if mes=='05' %}selected{% endif %}>Maio</option><option value="06" {% if mes=='06' %}selected{% endif %}>Junho</option><option value="07" {% if mes=='07' %}selected{% endif %}>Julho</option><option value="08" {% if mes=='08' %}selected{% endif %}>Agosto</option><option value="09" {% if mes=='09' %}selected{% endif %}>Setembro</option><option value="10" {% if mes=='10' %}selected{% endif %}>Outubro</option><option value="11" {% if mes=='11' %}selected{% endif %}>Novembro</option><option value="12" {% if mes=='12' %}selected{% endif %}>Dezembro</option></select><input name="ano" value="{{ ano }}" style="width:90px"><button>Consultar</button></form><form method="post" action="/funcionarios/folha/gerar">{{ csrf_input(request) }}<input type="hidden" name="mes" value="{{ mes }}"><input type="hidden" name="ano" value="{{ ano }}"><button class="primary">Gerar/atualizar folha</button></form></div>
+<div class="table-wrap"><table><thead><tr><th>Funcionário</th><th>Salário</th><th>VR</th><th>Horas extra</th><th>Outros</th><th>Total</th><th>Ação</th></tr></thead><tbody>{% for f in folha %}<tr><td>{{ f[1] }}<br><small>{{ f[2] }}</small></td><td>R$ {{ '%.2f'|format(f[3]|float) }}</td><td>R$ {{ '%.2f'|format(f[4]|float) }}</td><td>{{ f[5]|float }}h × R$ {{ '%.2f'|format(f[6]|float) }}</td><td>R$ {{ '%.2f'|format(f[8]|float) }}</td><td><strong>R$ {{ '%.2f'|format(f[9]|float) }}</strong></td><td><a href="/funcionarios/{{ f[0] }}?mes={{ mes }}&ano={{ ano }}">Editar folha</a></td></tr>{% else %}<tr><td colspan="7" class="muted">Nenhuma folha gerada para este período.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

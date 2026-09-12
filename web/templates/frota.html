@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block head_title %}Frota{% endblock %}
+{% block title %}Frota{% endblock %}
+{% block content %}
+{% if erro %}<div class="error">{{ erro }}</div>{% endif %}
+{% if ok %}<div class="success">{{ ok }}</div>{% endif %}
+<div class="grid two">
+<section class="panel">
+<h2>Novo veículo</h2>
+<form method="post" action="/frota/criar" class="form-grid">{{ csrf_input(request) }}
+<label>Placa<input name="placa" required maxlength="20"></label>
+<label>Modelo<input name="modelo" required maxlength="100"></label>
+<label>Motorista<input name="motorista" maxlength="100"></label>
+<label>Capacidade (kg)<input name="capacidade_kg" type="number" min="0" step="0.01" required></label>
+<label>Média (km/l)<input name="media_km_l" type="number" min="0" step="0.01"></label>
+<button class="primary">Cadastrar veículo</button>
+</form>
+</section>
+<section class="panel">
+<h2>Resumo da frota</h2>
+<div class="kpis" style="grid-template-columns:repeat(2,1fr)">
+<article><small>Total</small><strong>{{ caminhoes|length }}</strong></article>
+<article><small>Ativos</small><strong>{{ ativos }}</strong></article>
+</div>
+</section>
+</div>
+<section class="panel table-panel">
+<h2>Veículos cadastrados</h2>
+<div class="table-wrap"><table><thead><tr><th>Placa</th><th>Modelo</th><th>Motorista</th><th>Capacidade</th><th>Média</th><th>Status</th><th>Ações</th></tr></thead><tbody>
+{% for v in caminhoes %}<tr><td>{{ v.placa }}</td><td>{{ v.modelo }}</td><td>{{ v.motorista or '—' }}</td><td>{{ '%.0f'|format(v.capacidade_kg or 0) }} kg</td><td>{{ '%.2f'|format(v.media_km_l or 0) }} km/l</td><td>{{ v.status or 'ATIVO' }}</td><td>
+<form class="inline" method="post" action="/frota/{{ v.id }}/status">{{ csrf_input(request) }}<select name="novo_status"><option value="ATIVO" {% if (v.status or 'ATIVO')=='ATIVO' %}selected{% endif %}>ATIVO</option><option value="MANUTENÇÃO" {% if v.status=='MANUTENÇÃO' %}selected{% endif %}>MANUTENÇÃO</option><option value="INATIVO" {% if v.status=='INATIVO' %}selected{% endif %}>INATIVO</option></select><button>Salvar</button></form>
+<form class="inline" method="post" action="/frota/{{ v.id }}/excluir" onsubmit="return confirm('Excluir este veículo? O histórico das viagens será preservado.')">{{ csrf_input(request) }}<button>Excluir</button></form>
+</td></tr>{% else %}<tr><td colspan="7" class="muted">Nenhum veículo cadastrado.</td></tr>{% endfor %}
+</tbody></table></div></section>
+{% endblock %}

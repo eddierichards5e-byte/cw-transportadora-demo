@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block head_title %}Operações / Viagens — CW{% endblock %}{% block title %}Operações / Viagens{% endblock %}{% block content %}
+{% if erro %}<div class="error">{{ erro }}</div>{% endif %}
+<div class="grid two">
+<section class="panel"><h2>Nova viagem</h2><p class="muted">Selecione o veículo e as notas disponíveis. As mesmas validações do sistema desktop são executadas no servidor.</p>
+<form method="post" action="/viagens/criar" class="form-grid">{{ csrf_input(request) }}
+<label>Veículo<select name="caminhao_id" required>{% for c in caminhoes %}<option value="{{ c[0] }}">{{ c[1] }} · {{ c[2] }} · {{ c[3] or 'Sem motorista' }}</option>{% endfor %}</select></label>
+<label>Motorista<input name="motorista" required placeholder="Nome do motorista"></label>
+<label>Data/hora de saída<input type="datetime-local" name="data_saida" required></label>
+<label>IDs das notas<input name="notas_ids" required placeholder="Ex.: 101,102,103"></label>
+<button class="primary" type="submit">Criar viagem</button></form></section>
+<section class="panel"><h2>Notas disponíveis</h2><div class="scroll">{% for n in notas %}<div class="bar-row"><div><strong>#{{ n[0] }} · {{ n[1] or 'Sem CTe' }}</strong><div class="muted">{{ n[2] }} → {{ n[3] }} · {{ n[7] or 'Remetente' }} → {{ n[8] or 'Destinatário' }}</div></div><div><strong>R$ {{ '%.2f'|format(n[4] or 0) }}</strong><div class="muted">{{ '%.1f'|format(n[5] or 0) }} kg</div></div></div>{% else %}<p class="muted">Nenhuma nota disponível.</p>{% endfor %}</div></section></div>
+<section class="panel table-panel"><h2>Viagens recentes</h2><div class="table-wrap"><table><thead><tr><th>ID</th><th>Saída</th><th>Veículo</th><th>Motorista</th><th>Notas</th><th>Frete</th><th>Lucro</th><th>Status</th><th>Ações</th></tr></thead><tbody>{% for v in viagens %}<tr><td>VI-{{ v[0] }}</td><td>{{ v[1] or '—' }}</td><td>{{ v[9] or '—' }}<br><span class="muted">{{ v[10] or '' }}</span></td><td>{{ v[3] or '—' }}</td><td>{{ v[11] }}</td><td>R$ {{ '%.2f'|format(v[6] or 0) }}</td><td>R$ {{ '%.2f'|format(v[8] or 0) }}</td><td><span class="badge">{{ v[4] or '—' }}</span></td><td><form method="post" action="/viagens/{{ v[0] }}/status" class="inline">{{ csrf_input(request) }}<select name="novo_status"><option>Em trânsito</option><option>Finalizada</option><option>Entregue</option></select><button>Alterar</button></form><form method="post" action="/viagens/{{ v[0] }}/excluir" class="inline" onsubmit="return confirm('Excluir esta viagem?')">{{ csrf_input(request) }}<button>Excluir</button></form></td></tr>{% else %}<tr><td colspan="9" class="muted">Nenhuma viagem cadastrada.</td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}

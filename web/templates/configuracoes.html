@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% block title %}Configurações{% endblock %}{% block content %}
+{% if erro %}<div class="alert error">{{ erro }}</div>{% endif %}{% if ok %}<div class="alert success">{{ ok }}</div>{% endif %}
+<div class="two">
+<section class="panel"><div class="panel-head"><h2>Empresa</h2><span class="badge">Configuração</span></div>
+<form method="post" action="/configuracoes/salvar" class="grid-form">{{ csrf_input(request) }}
+<label>Empresa<input name="empresa" value="{{ cfg.empresa or '' }}" required></label><label>CNPJ<input name="cnpj" value="{{ cfg.cnpj or '' }}"></label><label>Telefone<input name="telefone" value="{{ cfg.telefone or '' }}"></label><label>E-mail<input type="email" name="email" value="{{ cfg.email or '' }}"></label><label>Cidade<input name="cidade" value="{{ cfg.cidade or '' }}"></label><label>UF<input name="uf" value="{{ cfg.uf or '' }}" maxlength="2"></label><label>Meta de lucro<input type="number" step="0.01" name="meta_lucro" value="{{ cfg.meta_lucro or '' }}"></label><label>Imposto (%)<input type="number" step="0.01" name="imposto_percentual" value="{{ cfg.imposto_percentual or '' }}"></label><label>Pasta de relatórios<input name="pasta_relatorios" value="{{ cfg.pasta_relatorios or 'relatorios_gerados' }}"></label><div><button class="primary" type="submit">Salvar configurações</button></div></form></section>
+<section class="panel"><div class="panel-head"><h2>Banco e segurança</h2><span class="badge">Operação</span></div>
+<div class="cards"><div class="card"><small>Tamanho do banco</small><strong>{{ info.tamanho }}</strong></div><div class="card"><small>Tabelas</small><strong>{{ info.tabelas }}</strong></div><div class="card"><small>Registros principais</small><strong>{{ info.registros }}</strong></div></div>
+<p class="muted">Último backup: {{ info.ultimo_backup }}</p><form method="post" action="/configuracoes/backup">{{ csrf_input(request) }}<button class="primary">Fazer backup agora</button></form><hr><p class="muted">Tokens e segredos não são exibidos nesta tela.</p></section></div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Relatórios{% endblock %}
+{% block content %}
+<form class="panel grid-form" method="get" action="/relatorios">
+  <label>Período<select name="tipo"><option {% if tipo=='Mês' %}selected{% endif %}>Mês</option><option {% if tipo=='Ano' %}selected{% endif %}>Ano</option><option {% if tipo=='Total' %}selected{% endif %}>Total</option></select></label>
+  <label>Mês<input type="number" name="mes" min="1" max="12" value="{{ mes }}"></label>
+  <label>Ano<input type="number" name="ano" min="2000" max="2100" value="{{ ano }}"></label>
+  <div><button class="primary" type="submit">Atualizar relatório</button> <a class="btn" href="/relatorios/pdf?tipo={{ tipo }}&mes={{ mes }}&ano={{ ano }}">Gerar PDF</a></div>
+</form>
+<div class="cards">
+{% for label,value in [('Receitas', resumo.receitas),('Despesas', resumo.despesas),('Resultado', resumo.resultado),('Margem', resumo.margem ~ '%'),('A receber', resumo.a_receber),('A pagar', resumo.a_pagar)] %}<article class="card"><small>{{ label }}</small><strong>{% if label=='Margem' %}{{ value }}{% else %}R$ {{ '%.2f'|format(value|float) }}{% endif %}</strong></article>{% endfor %}
+</div>
+<div class="two grid">
+<section class="panel"><h2>Operação</h2><table><tr><th>Indicador</th><th>Valor</th></tr><tr><td>Notas</td><td>{{ resumo.total_notas }}</td></tr><tr><td>Frete das notas</td><td>R$ {{ '%.2f'|format(resumo.frete_notas|float) }}</td></tr><tr><td>Viagens</td><td>{{ resumo.total_viagens }}</td></tr><tr><td>Frete das viagens</td><td>R$ {{ '%.2f'|format(resumo.frete_viagens|float) }}</td></tr><tr><td>Lucro das viagens</td><td>R$ {{ '%.2f'|format(resumo.lucro_viagens|float) }}</td></tr></table></section>
+<section class="panel"><h2>Custos</h2><table><tr><th>Indicador</th><th>Valor</th></tr><tr><td>Folha</td><td>R$ {{ '%.2f'|format(resumo.folha|float) }}</td></tr><tr><td>Combustível</td><td>R$ {{ '%.2f'|format(resumo.combustivel|float) }}</td></tr><tr><td>Manutenção</td><td>R$ {{ '%.2f'|format(resumo.manutencao|float) }}</td></tr><tr><td>Recebido</td><td>R$ {{ '%.2f'|format(resumo.recebidas|float) }}</td></tr><tr><td>Pago</td><td>R$ {{ '%.2f'|format(resumo.pagas|float) }}</td></tr></table></section>
+</div>
+<section class="panel table-panel"><h2>Viagens recentes</h2><div class="table-wrap"><table><tr><th>ID</th><th>Data</th><th>Placa</th><th>Motorista</th><th>Frete</th><th>Custo</th><th>Lucro</th><th>Status</th></tr>{% for x in detalhes.viagens %}<tr><td>{{x[0]}}</td><td>{{x[1]}}</td><td>{{x[2]}}</td><td>{{x[3]}}</td><td>R$ {{'%.2f'|format(x[4])}}</td><td>R$ {{'%.2f'|format(x[5])}}</td><td>R$ {{'%.2f'|format(x[6])}}</td><td>{{x[7]}}</td></tr>{% else %}<tr><td colspan="8" class="muted">Nenhuma viagem encontrada.</td></tr>{% endfor %}</table></div></section>
+<section class="panel table-panel"><h2>Frota</h2><div class="table-wrap"><table><tr><th>Placa</th><th>Modelo</th><th>Motorista</th><th>Média km/L</th></tr>{% for x in detalhes.veiculos %}<tr><td>{{x[1]}}</td><td>{{x[2]}}</td><td>{{x[3]}}</td><td>{{x[4] or '—'}}</td></tr>{% else %}<tr><td colspan="4" class="muted">Nenhum veículo encontrado.</td></tr>{% endfor %}</table></div></section>
+</div>
+{% endblock %}

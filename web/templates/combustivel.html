@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block head_title %}Combustível{% endblock %}{% block title %}Combustível{% endblock %}
+{% block content %}
+{% if erro %}<div class="error">{{ erro }}</div>{% endif %}{% if ok %}<div class="success">{{ ok }}</div>{% endif %}
+<div class="grid two"><section class="panel"><h2>Novo abastecimento</h2><form method="post" action="/combustivel/criar" class="form-grid">{{ csrf_input(request) }}
+<label>Data<input type="date" name="data_abastecimento" required></label>
+<label>Veículo<select name="veiculo" required><option value="">Selecione</option>{% for v in veiculos %}<option value="{{v.placa}}">{{v.placa}} — {{v.modelo}}</option>{% endfor %}</select></label>
+<label>Motorista<input name="motorista"></label><label>KM atual<input name="km_atual" type="number" min="0" step="1" required></label>
+<label>Litros<input name="litros" type="number" min="0.01" step="0.01" required></label><label>Valor/litro<input name="valor_litro" type="number" min="0" step="0.001" required></label>
+<label>Valor total<input name="valor_total" type="number" min="0" step="0.01" placeholder="0 = calcula litros × valor/litro"></label><label>Posto<input name="posto"></label>
+<label class="wide">Observação<input name="observacao"></label><button class="primary">Registrar abastecimento</button></form></section>
+<section class="panel"><h2>Resumo</h2><div class="kpis" style="grid-template-columns:repeat(3,1fr)"><article><small>Abastecimentos</small><strong>{{ abastecimentos|length }}</strong></article><article><small>Litros</small><strong>{{ '%.1f'|format(total_litros) }}</strong></article><article><small>Custo</small><strong>R$ {{ '%.2f'|format(total_custo) }}</strong></article></div><div class="next"><strong>Média registrada</strong><span>{{ '%.2f'|format(media) }} km/l</span></div></section></div>
+<section class="panel table-panel"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center"><h2>Histórico de abastecimentos</h2><form class="inline"><input name="busca" value="{{busca}}" placeholder="Buscar veículo, motorista ou posto"><button>Filtrar</button></form></div>
+<div class="table-wrap"><table><thead><tr><th>Data</th><th>Veículo</th><th>Motorista</th><th>KM</th><th>Litros</th><th>R$/L</th><th>Total</th><th>km/l</th><th>R$/km</th><th>Posto</th><th>Ação</th></tr></thead><tbody>
+{% for a in abastecimentos %}<tr><td>{{a.data}}</td><td>{{a.veiculo}}</td><td>{{a.motorista or '—'}}</td><td>{{'%.0f'|format(a.km or 0)}}</td><td>{{'%.2f'|format(a.litros or 0)}}</td><td>R$ {{'%.3f'|format(a.valor_litro or 0)}}</td><td>R$ {{'%.2f'|format(a.valor_total or 0)}}</td><td>{{'%.2f'|format(a.media or 0)}}</td><td>R$ {{'%.3f'|format(a.custo_km or 0)}}</td><td>{{a.posto or '—'}}</td><td><form method="post" action="/combustivel/{{a.id}}/excluir" onsubmit="return confirm('Excluir este abastecimento?')">{{ csrf_input(request) }}<button>Excluir</button></form></td></tr>{% else %}<tr><td colspan="11" class="muted">Nenhum abastecimento encontrado.</td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}

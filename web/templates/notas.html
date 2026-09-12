@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block head_title %}Notas / TMS — CW{% endblock %}
+{% block title %}Notas / TMS{% endblock %}
+{% block content %}
+{% if erro %}<div class="error">{{ erro }}</div>{% endif %}
+{% if ok %}<div class="success">{{ ok }}</div>{% endif %}
+<div class="two grid">
+  <section class="panel">
+    <h2>Importar manifesto</h2>
+    <p class="muted">Envie o arquivo TXT do manifesto. O importador original do sistema será utilizado.</p>
+    <form class="form-grid" method="post" action="/notas/importar" enctype="multipart/form-data">{{ csrf_input(request) }}
+      <label>Arquivo TXT<input type="file" name="arquivo" accept=".txt,text/plain" required></label>
+      <button class="primary" type="submit">Importar manifesto</button>
+    </form>
+  </section>
+  <section class="panel">
+    <h2>Resumo</h2>
+    <div class="kpis grid" style="grid-template-columns:repeat(2,1fr)">
+      <article><small>Manifestos</small><strong>{{ manifestos|length }}</strong></article>
+      <article><small>Notas</small><strong>{{ notas|length }}</strong></article>
+    </div>
+  </section>
+</div>
+<section class="panel table-panel">
+  <h2>Manifestos importados</h2>
+  <div class="table-wrap"><table><thead><tr><th>ID</th><th>Arquivo</th><th>Importação</th><th>Notas</th><th>Frete</th><th>Peso</th><th>Ações</th></tr></thead><tbody>
+  {% for m in manifestos %}<tr><td>{{m[0]}}</td><td>{{m[1]}}</td><td>{{m[2]}}</td><td>{{m[3]}}</td><td>R$ {{"%.2f"|format(m[5] or 0)}}</td><td>{{"%.2f"|format(m[6] or 0)}}</td><td><a href="/notas/manifestos/{{m[0]}}">Ver notas</a> <form class="inline" method="post" action="/notas/manifestos/{{m[0]}}/excluir" onsubmit="return confirm('Excluir este manifesto e suas notas?')">{{ csrf_input(request) }}<button>Excluir</button></form></td></tr>{% else %}<tr><td colspan="7" class="muted">Nenhum manifesto importado.</td></tr>{% endfor %}
+  </tbody></table></div>
+</section>
+{% if manifesto_id %}<section class="panel table-panel"><h2>Notas do manifesto #{{manifesto_id}}</h2><div class="table-wrap"><table><thead><tr><th>ID</th><th>NF-e</th><th>CT-e</th><th>Remetente</th><th>Destinatário</th><th>Origem</th><th>Destino</th><th>Frete</th><th>Peso</th><th>Status</th></tr></thead><tbody>{% for n in detalhes %}<tr>{% for x in n %}<td>{{x}}</td>{% endfor %}</tr>{% else %}<tr><td colspan="10" class="muted">Nenhuma nota vinculada.</td></tr>{% endfor %}</tbody></table></div></section>{% endif %}
+<section class="panel table-panel"><h2>Notas cadastradas</h2><div class="table-wrap"><table><thead><tr><th>ID</th><th>NF-e</th><th>CT-e</th><th>Remetente</th><th>Destinatário</th><th>Origem</th><th>Destino</th><th>Frete</th><th>Peso</th><th>Status</th></tr></thead><tbody>{% for n in notas[:200] %}<tr>{% for x in n %}<td>{{x}}</td>{% endfor %}</tr>{% else %}<tr><td colspan="10" class="muted">Nenhuma nota cadastrada.</td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}
