@@ -22,7 +22,16 @@ table{width:100%;border-collapse:collapse;font-size:12px}th{background:#f6f9fd;c
 @media(max-width:1100px){.sidebar{width:220px;flex-basis:220px}.kpis{grid-template-columns:repeat(2,1fr)}.grid,.bottom{grid-template-columns:1fr}.search{width:340px}}
 @media(max-width:700px){.sidebar{display:none}.content{padding:18px}.topbar{padding:0 18px}.search{width:100%}.account{display:none}.kpis{grid-template-columns:1fr}.date{display:none}}
 </style>
-</head>
+<style>
+.module-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;background:#fff;border:1px solid #e4ebf3;border-radius:14px;padding:20px;margin-bottom:18px}
+.module-form label{font-size:12px;font-weight:700;color:#536b86;display:flex;flex-direction:column;gap:7px}
+.module-form input,.module-form select{height:42px;border:1px solid #dce5ef;border-radius:9px;padding:0 12px;font:inherit;color:#10294a;outline:none;background:#fbfdff}
+.module-form input:focus,.module-form select:focus{border-color:#2684ff;box-shadow:0 0 0 3px #2684ff18}
+.module-form .full{grid-column:1/-1}.form-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:3px}
+.btn-primary{border:0;border-radius:9px;background:#1677f2;color:#fff;font-weight:700;padding:11px 17px;cursor:pointer}.btn-secondary{border:1px solid #dce5ef;border-radius:9px;background:#fff;color:#24415f;font-weight:600;padding:10px 16px;cursor:pointer}
+.action-btn{border:0;background:none;color:#1677f2;cursor:pointer;font-weight:600;margin-right:12px}.action-danger{color:#e04b4b}
+@media(max-width:800px){.module-form{grid-template-columns:1fr}}
+</style></head>
 <body>
 <div class="app">
 <aside class="sidebar">
@@ -153,12 +162,30 @@ function openView(name){
  document.querySelectorAll('.nav a').forEach(a=>a.classList.toggle('active',a.dataset.view===name));
  if(name==='Dashboard'){location.hash='';location.reload();return}
  location.hash=encodeURIComponent(name);
+ if(name==='Clientes'){renderClientes();return}
  const m=viewMeta[name], rows=demoData[name]||[];
  document.querySelector('.content').innerHTML='<div class="title-row"><div class="title-icon">'+m[2]+'</div><div><h1>'+m[0]+'</h1><p>'+m[1]+'</p></div><button class="date" onclick="addRecord()">＋ Novo registro</button></div>'+
  '<section class="panel"><div class="panel-head"><div class="panel-title"><span class="mini">'+m[2]+'</span>'+m[0]+'</div><div style="display:flex;gap:10px"><input id="viewSearch" placeholder="Buscar..." oninput="filterRows()" style="height:38px;border:1px solid #e1e9f2;border-radius:8px;padding:0 12px;outline:none"><button class="date" onclick="showToast(\'Exportação simulada com sucesso\')">⇩ Exportar</button></div></div>'+
  '<div style="overflow:auto"><table id="dataTable"><thead><tr>'+Object.keys(rows[0]||{}).map(k=>'<th>'+fieldLabels[k]+'</th>').join('')+'<th>Ações</th></tr></thead><tbody>'+rows.map((r,i)=>rowHtml(r,i)).join('')+'</tbody></table></div></section>'+
  '<div class="grid" style="margin-top:18px"><section class="panel"><div class="panel-title">Resumo rápido</div><div class="kpis" style="margin-top:15px;grid-template-columns:repeat(3,1fr)"><div class="kpi" style="min-height:110px"><div class="klabel">Registros</div><div class="value">'+rows.length+'</div><div class="trend neutral">dados fictícios</div></div><div class="kpi" style="min-height:110px"><div class="klabel">Status ativos</div><div class="value">'+rows.filter(x=>/ativo|andamento|autorizado|disponível|recebido|concluída|pago/i.test(x.status||'')).length+'</div><div class="trend">↑ operação normal</div></div><div class="kpi" style="min-height:110px"><div class="klabel">Atualização</div><div class="value" style="font-size:18px">Hoje</div><div class="trend neutral">ambiente demo</div></div></div></section><section class="panel"><div class="panel-title">Ambiente seguro</div><div class="demo" style="margin-top:15px"><div class="demo-title">✓ Dados fictícios</div><p>Esta tela é somente uma demonstração. Nenhum dado real do Supabase ou do programa Python é utilizado.</p></div></section></div>';
 }
+function renderClientes(){
+ const rows=demoData.Clientes;
+ document.querySelector('.content').innerHTML='<div class="title-row"><div class="title-icon">👥</div><div><h1>Clientes</h1><p>Cadastre e gerencie os clientes da transportadora</p></div><button class="date" onclick="toggleClienteForm()">＋ Novo cliente</button></div>'+
+ '<section class="panel" id="clienteFormWrap" style="display:none"><div class="panel-title">Novo cliente</div><form class="module-form" onsubmit="saveCliente(event)">'+
+ '<label>Nome da empresa<input name="nome" required placeholder="Ex.: Empresa ABC"></label><label>Contato<input name="contato" required placeholder="Nome do contato"></label>'+
+ '<label>Cidade / UF<input name="cidade" required placeholder="Curitiba/PR"></label><label>Status<select name="status"><option>Ativo</option><option>Inativo</option></select></label>'+
+ '<div class="full form-actions"><button type="button" class="btn-secondary" onclick="toggleClienteForm()">Cancelar</button><button class="btn-primary">Salvar cliente</button></div></form></section>'+
+ '<section class="panel"><div class="panel-head"><div><div class="panel-title">Carteira de clientes</div><div class="subtle">'+rows.length+' clientes cadastrados na demonstração</div></div><div style="display:flex;gap:10px"><input id="clienteSearch" placeholder="Buscar cliente..." oninput="filterClientes()" style="height:38px;border:1px solid #e1e9f2;border-radius:8px;padding:0 12px;outline:none"><button class="date" onclick="showToast(\'Exportação simulada com sucesso\')">⇩ Exportar</button></div></div>'+
+ '<div style="overflow:auto"><table id="clientesTable"><thead><tr><th>Código</th><th>Empresa</th><th>Cidade</th><th>Contato</th><th>Status</th><th>Ações</th></tr></thead><tbody>'+rows.map((r,i)=>clienteRow(r,i)).join('')+'</tbody></table></div></section>'+
+ '<div class="grid" style="margin-top:18px"><section class="panel"><div class="panel-title">Resumo de clientes</div><div class="kpis" style="margin-top:15px;grid-template-columns:repeat(3,1fr)"><div class="kpi" style="min-height:105px"><div class="klabel">Total</div><div class="value">'+rows.length+'</div></div><div class="kpi" style="min-height:105px"><div class="klabel">Ativos</div><div class="value">'+rows.filter(x=>x.status==='Ativo').length+'</div></div><div class="kpi" style="min-height:105px"><div class="klabel">Inativos</div><div class="value">'+rows.filter(x=>x.status==='Inativo').length+'</div></div></div></section><section class="panel"><div class="panel-title">Ambiente seguro</div><div class="demo" style="margin-top:15px"><div class="demo-title">✓ Dados fictícios</div><p>Inclusões e alterações ficam somente nesta sessão do navegador.</p></div></section></div>';
+}
+function clienteRow(r,i){return '<tr><td class="trip">'+escapeHtml(r.codigo)+'</td><td><strong>'+escapeHtml(r.nome)+'</strong></td><td>'+escapeHtml(r.cidade)+'</td><td>'+escapeHtml(r.contato)+'</td><td><span class="badge '+statusClass(r.status)+'">'+escapeHtml(r.status)+'</span></td><td><button class="action-btn" onclick="editCliente('+i+')">Editar</button><button class="action-btn action-danger" onclick="deleteCliente('+i+')">Excluir</button></td></tr>'}
+function toggleClienteForm(){const el=document.getElementById('clienteFormWrap');if(el)el.style.display=el.style.display==='none'?'block':'none'}
+function saveCliente(e){e.preventDefault();const f=e.target;const n={codigo:'CLI-'+String(demoData.Clientes.length+1).padStart(3,'0'),nome:f.nome.value.trim(),contato:f.contato.value.trim(),cidade:f.cidade.value.trim(),status:f.status.value};demoData.Clientes.push(n);renderClientes();showToast('Cliente cadastrado na demonstração')}
+function editCliente(i){const r=demoData.Clientes[i];const nome=prompt('Nome da empresa:',r.nome);if(nome===null)return;const contato=prompt('Contato:',r.contato);if(contato===null)return;const cidade=prompt('Cidade / UF:',r.cidade);if(cidade===null)return;r.nome=nome.trim()||r.nome;r.contato=contato.trim()||r.contato;r.cidade=cidade.trim()||r.cidade;renderClientes();showToast('Cliente atualizado')}
+function deleteCliente(i){if(!confirm('Excluir '+demoData.Clientes[i].nome+' da demonstração?'))return;demoData.Clientes.splice(i,1);renderClientes();showToast('Cliente excluído da demonstração')}
+function filterClientes(){const q=(document.getElementById('clienteSearch')?.value||'').toLowerCase();document.querySelectorAll('#clientesTable tbody tr').forEach(tr=>tr.style.display=tr.innerText.toLowerCase().includes(q)?'':'none')}
 function rowHtml(r,i){return '<tr>'+Object.entries(r).map(([k,v])=>'<td class="'+(k==='codigo'?'trip':'')+'">'+(k==='status'?'<span class="badge '+statusClass(v)+'">'+escapeHtml(v)+'</span>':escapeHtml(v))+'</td>').join('')+'<td><button onclick="editRecord('+i+')" style="border:0;background:none;color:#1677f2;cursor:pointer">Editar</button></td></tr>'}
 function statusClass(v){v=String(v).toLowerCase();return /conclu|pago|receb|dispon|autoriz|ativo/.test(v)?'done':/manuten|pend|férias|agendada/.test(v)?'planned':'doing'}
 function filterRows(){let q=(document.getElementById('viewSearch')?.value||'').toLowerCase();document.querySelectorAll('#dataTable tbody tr').forEach(tr=>tr.style.display=tr.innerText.toLowerCase().includes(q)?'':'none')}
