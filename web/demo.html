@@ -143,33 +143,7 @@ Viagens:['Viagens','Planejamento e acompanhamento das operações','🚚'],
 Frota:['Frota','Veículos, disponibilidade e documentação','▣'],
 Combustível:['Combustível','Abastecimentos e controle de consumo','⛽'],
 Manutenção:['Manutenção','Ordens de serviço e manutenção da frota','🔧'],
-Financeiro:['Financeiro','Receitas, despesas e resultados da operação','R:['Funcionários','Equipe, motoristas e colaboradores','♟'],
-Relatórios:['Relatórios','Indicadores e relatórios gerenciais','▥']};
-const fieldLabels={codigo:'Código',nome:'Nome',cidade:'Cidade',contato:'Contato',status:'Status',cliente:'Cliente',rota:'Rota',valor:'Valor',motorista:'Motorista',veiculo:'Veículo',modelo:'Modelo',tipo:'Tipo',km:'Quilometragem',data:'Data',litros:'Volume',posto:'Posto',servico:'Serviço',descricao:'Descrição',atualizacao:'Atualização',telefone:'Telefone',cargo:'Cargo'};
-function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-function showToast(msg){let t=document.getElementById('toast');if(!t){t=document.createElement('div');t.id='toast';t.style='position:fixed;right:24px;bottom:24px;background:#10294a;color:white;padding:13px 18px;border-radius:10px;box-shadow:0 10px 30px #0003;z-index:99;font-size:13px';document.body.appendChild(t)}t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2200)}
-function openView(name){
- document.querySelectorAll('.nav a').forEach(a=>a.classList.toggle('active',a.dataset.view===name));
- if(name==='Dashboard'){location.hash='';location.reload();return}
- location.hash=encodeURIComponent(name);
- const m=viewMeta[name], rows=demoData[name]||[];
- document.querySelector('.content').innerHTML='<div class="title-row"><div class="title-icon">'+m[2]+'</div><div><h1>'+m[0]+'</h1><p>'+m[1]+'</p></div><button class="date" onclick="addRecord()">＋ Novo registro</button></div>'+
- '<section class="panel"><div class="panel-head"><div class="panel-title"><span class="mini">'+m[2]+'</span>'+m[0]+'</div><div style="display:flex;gap:10px"><input id="viewSearch" placeholder="Buscar..." oninput="filterRows()" style="height:38px;border:1px solid #e1e9f2;border-radius:8px;padding:0 12px;outline:none"><button class="date" onclick="showToast('Exportação simulada com sucesso')">⇩ Exportar</button></div></div>'+
- '<div style="overflow:auto"><table id="dataTable"><thead><tr>'+Object.keys(rows[0]||{}).map(k=>'<th>'+fieldLabels[k]+'</th>').join('')+'<th>Ações</th></tr></thead><tbody>'+rows.map((r,i)=>rowHtml(r,i)).join('')+'</tbody></table></div></section>'+
- '<div class="grid" style="margin-top:18px"><section class="panel"><div class="panel-title">Resumo rápido</div><div class="kpis" style="margin-top:15px;grid-template-columns:repeat(3,1fr)"><div class="kpi" style="min-height:110px"><div class="klabel">Registros</div><div class="value">'+rows.length+'</div><div class="trend neutral">dados fictícios</div></div><div class="kpi" style="min-height:110px"><div class="klabel">Status ativos</div><div class="value">'+rows.filter(x=>/ativo|andamento|autorizado|disponível|recebido|concluída|pago/i.test(x.status||'')).length+'</div><div class="trend">↑ operação normal</div></div><div class="kpi" style="min-height:110px"><div class="klabel">Atualização</div><div class="value" style="font-size:18px">Hoje</div><div class="trend neutral">ambiente demo</div></div></div></section><section class="panel"><div class="panel-title">Ambiente seguro</div><div class="demo" style="margin-top:15px"><div class="demo-title">✓ Dados fictícios</div><p>Esta tela é somente uma demonstração. Nenhum dado real do Supabase ou do programa Python é utilizado.</p></div></section></div>';
-}
-function rowHtml(r,i){return '<tr>'+Object.entries(r).map(([k,v])=>'<td class="'+(k==='codigo'?'trip':'')+'">'+(k==='status'?'<span class="badge '+statusClass(v)+'">'+escapeHtml(v)+'</span>':escapeHtml(v))+'</td>').join('')+'<td><button onclick="editRecord('+i+')" style="border:0;background:none;color:#1677f2;cursor:pointer">Editar</button></td></tr>'}
-function statusClass(v){v=String(v).toLowerCase();return /conclu|pago|receb|dispon|autoriz|ativo/.test(v)?'done':/manuten|pend|férias|agendada/.test(v)?'planned':'doing'}
-function filterRows(){let q=document.getElementById('viewSearch').value.toLowerCase();document.querySelectorAll('#dataTable tbody tr').forEach(tr=>tr.style.display=tr.innerText.toLowerCase().includes(q)?'':'none')}
-function addRecord(){showToast('Formulário de novo registro — demonstração');}
-function editRecord(i){showToast('Edição simulada: registro '+(i+1));}
-document.addEventListener('DOMContentLoaded',()=>{
- document.querySelectorAll('.nav a').forEach(a=>{let n=a.textContent.trim();a.dataset.view=n;a.addEventListener('click',e=>{e.preventDefault();openView(n)})});
- document.querySelector('.search')?.addEventListener('click',()=>showToast('Busca global disponível nesta demonstração'));
- const h=decodeURIComponent(location.hash.slice(1));if(viewMeta[h])openView(h);
-});
-</script></body>
-</html>],
+Financeiro:['Financeiro','Receitas, despesas e resultados da operação','R$'],
 Funcionários:['Funcionários','Equipe, motoristas e colaboradores','♟'],
 Relatórios:['Relatórios','Indicadores e relatórios gerenciais','▥']};
 const fieldLabels={codigo:'Código',nome:'Nome',cidade:'Cidade',contato:'Contato',status:'Status',cliente:'Cliente',rota:'Rota',valor:'Valor',motorista:'Motorista',veiculo:'Veículo',modelo:'Modelo',tipo:'Tipo',km:'Quilometragem',data:'Data',litros:'Volume',posto:'Posto',servico:'Serviço',descricao:'Descrição',atualizacao:'Atualização',telefone:'Telefone',cargo:'Cargo'};
@@ -181,15 +155,15 @@ function openView(name){
  location.hash=encodeURIComponent(name);
  const m=viewMeta[name], rows=demoData[name]||[];
  document.querySelector('.content').innerHTML='<div class="title-row"><div class="title-icon">'+m[2]+'</div><div><h1>'+m[0]+'</h1><p>'+m[1]+'</p></div><button class="date" onclick="addRecord()">＋ Novo registro</button></div>'+
- '<section class="panel"><div class="panel-head"><div class="panel-title"><span class="mini">'+m[2]+'</span>'+m[0]+'</div><div style="display:flex;gap:10px"><input id="viewSearch" placeholder="Buscar..." oninput="filterRows()" style="height:38px;border:1px solid #e1e9f2;border-radius:8px;padding:0 12px;outline:none"><button class="date" onclick="showToast('Exportação simulada com sucesso')">⇩ Exportar</button></div></div>'+
+ '<section class="panel"><div class="panel-head"><div class="panel-title"><span class="mini">'+m[2]+'</span>'+m[0]+'</div><div style="display:flex;gap:10px"><input id="viewSearch" placeholder="Buscar..." oninput="filterRows()" style="height:38px;border:1px solid #e1e9f2;border-radius:8px;padding:0 12px;outline:none"><button class="date" onclick="showToast(\'Exportação simulada com sucesso\')">⇩ Exportar</button></div></div>'+
  '<div style="overflow:auto"><table id="dataTable"><thead><tr>'+Object.keys(rows[0]||{}).map(k=>'<th>'+fieldLabels[k]+'</th>').join('')+'<th>Ações</th></tr></thead><tbody>'+rows.map((r,i)=>rowHtml(r,i)).join('')+'</tbody></table></div></section>'+
  '<div class="grid" style="margin-top:18px"><section class="panel"><div class="panel-title">Resumo rápido</div><div class="kpis" style="margin-top:15px;grid-template-columns:repeat(3,1fr)"><div class="kpi" style="min-height:110px"><div class="klabel">Registros</div><div class="value">'+rows.length+'</div><div class="trend neutral">dados fictícios</div></div><div class="kpi" style="min-height:110px"><div class="klabel">Status ativos</div><div class="value">'+rows.filter(x=>/ativo|andamento|autorizado|disponível|recebido|concluída|pago/i.test(x.status||'')).length+'</div><div class="trend">↑ operação normal</div></div><div class="kpi" style="min-height:110px"><div class="klabel">Atualização</div><div class="value" style="font-size:18px">Hoje</div><div class="trend neutral">ambiente demo</div></div></div></section><section class="panel"><div class="panel-title">Ambiente seguro</div><div class="demo" style="margin-top:15px"><div class="demo-title">✓ Dados fictícios</div><p>Esta tela é somente uma demonstração. Nenhum dado real do Supabase ou do programa Python é utilizado.</p></div></section></div>';
 }
 function rowHtml(r,i){return '<tr>'+Object.entries(r).map(([k,v])=>'<td class="'+(k==='codigo'?'trip':'')+'">'+(k==='status'?'<span class="badge '+statusClass(v)+'">'+escapeHtml(v)+'</span>':escapeHtml(v))+'</td>').join('')+'<td><button onclick="editRecord('+i+')" style="border:0;background:none;color:#1677f2;cursor:pointer">Editar</button></td></tr>'}
 function statusClass(v){v=String(v).toLowerCase();return /conclu|pago|receb|dispon|autoriz|ativo/.test(v)?'done':/manuten|pend|férias|agendada/.test(v)?'planned':'doing'}
-function filterRows(){let q=document.getElementById('viewSearch').value.toLowerCase();document.querySelectorAll('#dataTable tbody tr').forEach(tr=>tr.style.display=tr.innerText.toLowerCase().includes(q)?'':'none')}
-function addRecord(){showToast('Formulário de novo registro — demonstração');}
-function editRecord(i){showToast('Edição simulada: registro '+(i+1));}
+function filterRows(){let q=(document.getElementById('viewSearch')?.value||'').toLowerCase();document.querySelectorAll('#dataTable tbody tr').forEach(tr=>tr.style.display=tr.innerText.toLowerCase().includes(q)?'':'none')}
+function addRecord(){showToast('Formulário de novo registro — demonstração')}
+function editRecord(i){showToast('Edição simulada: registro '+(i+1))}
 document.addEventListener('DOMContentLoaded',()=>{
  document.querySelectorAll('.nav a').forEach(a=>{let n=a.textContent.trim();a.dataset.view=n;a.addEventListener('click',e=>{e.preventDefault();openView(n)})});
  document.querySelector('.search')?.addEventListener('click',()=>showToast('Busca global disponível nesta demonstração'));
