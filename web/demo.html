@@ -253,30 +253,9 @@ function saveMan(e){e.preventDefault();const f=e.target;demoData.Manutenção.pu
 function editMan(i){const r=demoData.Manutenção[i];const s=prompt('Status da ordem:',r.status);if(s===null)return;r.status=s.trim()||r.status;renderManutencao();showToast('Ordem atualizada')}
 function deleteMan(i){if(!confirm('Excluir '+demoData.Manutenção[i].codigo+' da demonstração?'))return;demoData.Manutenção.splice(i,1);renderManutencao();showToast('Ordem excluída da demonstração')}
 function filterMan(){const q=(document.getElementById('manSearch')?.value||'').toLowerCase();document.querySelectorAll('#manTable tbody tr').forEach(tr=>tr.style.display=tr.innerText.toLowerCase().includes(q)?'':'none')}
-<style>
-.detail-overlay{position:fixed;inset:0;background:rgba(7,22,38,.48);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:9999;padding:22px}
-.detail-modal{width:min(760px,96vw);max-height:88vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 25px 70px rgba(7,22,38,.25)}
-.detail-head{display:flex;justify-content:space-between;align-items:flex-start;padding:22px 24px;border-bottom:1px solid #edf1f5}
-.detail-head h2{margin:0 0 5px;font-size:20px;color:#122b45}.detail-head p{margin:0;color:#718399;font-size:13px}
-.detail-close{border:0;background:#f2f5f8;border-radius:8px;width:34px;height:34px;font-size:18px}
-.detail-body{padding:22px 24px}.detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.detail-card{border:1px solid #e8eef4;border-radius:10px;padding:13px;background:#fbfcfd}.detail-label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#8494a6;margin-bottom:5px}.detail-value{font-size:14px;font-weight:700;color:#233b54}
-.detail-notes{margin-top:16px;border-top:1px solid #edf1f5;padding-top:16px}.detail-notes div{padding:9px 0;border-bottom:1px solid #f0f3f6}
-@media(max-width:650px){.detail-grid{grid-template-columns:1fr}}
-</style>
+
 <div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()"><div class="detail-modal"><div class="detail-head"><div><h2 id="detailTitle">Detalhes</h2><p id="detailSubtitle">Informações do registro</p></div><button class="detail-close" onclick="closeDetail()">×</button></div><div class="detail-body" id="detailBody"></div></div></div>
-<script>
-function openDetail(title,subtitle,items,notes){
- document.getElementById('detailTitle').textContent=title;document.getElementById('detailSubtitle').textContent=subtitle||'Informações do registro';
- document.getElementById('detailBody').innerHTML='<div class="detail-grid">'+items.map(x=>'<div class="detail-card"><div class="detail-label">'+escapeHtml(x[0])+'</div><div class="detail-value">'+escapeHtml(String(x[1]??'—'))+'</div></div>').join('')+'</div>'+(notes?'<div class="detail-notes">'+notes+'</div>':'');
- document.getElementById('detailOverlay').style.display='flex';
-}
-function closeDetail(){document.getElementById('detailOverlay').style.display='none'}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetail()});
-function viewFrota(i){const r=demoData.Frota[i];openDetail(r.codigo,r.modelo,[['Modelo',r.modelo],['Tipo',r.tipo],['Quilometragem',r.km],['Status',r.status]]);}
-function viewMan(i){const r=demoData.Manutenção[i];openDetail(r.codigo,'Ordem de serviço',[['Veículo',r.veiculo],['Serviço',r.servico],['Data',r.data],['Status',r.status]]);}
-function viewComb(i){const r=demoData.Combustível[i];openDetail(r.veiculo+' — '+r.data,'Abastecimento',[['Veículo',r.veiculo],['Data',r.data],['Litros',r.litros+' L'],['Valor','R$ '+Number(r.valor||0).toLocaleString('pt-BR',{minimumFractionDigits:2})],['Posto',r.posto]]);}
-</script>function renderFrota(){
+function renderFrota(){
  const rows=demoData.Frota;
  document.querySelector('.content').innerHTML='<div class="title-row"><div class="title-icon">▣</div><div><h1>Frota</h1><p>Controle de veículos, disponibilidade e quilometragem</p></div><button class="date" onclick="toggleFrotaForm()">＋ Novo veículo</button></div>'+
  '<section class="panel" id="frotaFormWrap" style="display:none"><div class="panel-title">Cadastrar veículo</div><form class="module-form" onsubmit="saveFrota(event)">'+
