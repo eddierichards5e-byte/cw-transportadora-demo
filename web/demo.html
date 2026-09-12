@@ -1,6 +1,87 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CW Transportadora — DEMO</title><style>
-body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#172033}.app{display:flex;min-height:100vh}.side{width:230px;background:#172033;color:white;padding:22px 14px}.logo{font-size:20px;font-weight:bold;padding:8px 10px 25px}.badge{font-size:10px;background:#e7b84b;color:#172033;padding:4px 6px;border-radius:7px}nav a{display:block;color:#c8d0df;text-decoration:none;padding:11px;border-radius:8px;margin:3px 0}nav a:first-child{background:#27344c;color:white}main{flex:1;padding:28px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}h1{margin:0}.sub,.label{color:#69758a}.user,.card,.panel{background:white;border:1px solid #e1e6ef;border-radius:12px}.user{padding:10px 14px}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.card{padding:18px}.num{font-size:27px;font-weight:bold;margin:8px 0}.grid{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-top:18px}.panel{padding:20px}.panel h2{font-size:17px;margin-top:0}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:12px 8px;border-bottom:1px solid #edf0f5}.status{padding:5px 8px;border-radius:7px;background:#eef5ff;font-size:11px}.bar{height:9px;background:#edf0f5;border-radius:8px}.fill{height:100%;width:72%;background:#4e79a7;border-radius:8px}.notice{margin-top:18px;padding:13px;border-radius:10px;background:#fff8df;border:1px solid #f0df9b}@media(max-width:850px){.cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}@media(max-width:600px){.side{display:none}.cards{grid-template-columns:1fr}main{padding:18px}}</style></head>
-<body><div class="app"><aside class="side"><div class="logo">CW Transportadora <span class="badge">DEMO</span></div><nav><a>Dashboard</a><a>Clientes</a><a>Notas / CT-e</a><a>Viagens</a><a>Frota</a><a>Combustível</a><a>Manutenção</a><a>Financeiro</a><a>Funcionários</a><a>Relatórios</a></nav></aside><main><div class="top"><div><h1>Dashboard</h1><div class="sub">Visão geral da operação</div></div><div class="user">Administrador Demo ▾</div></div>
-<div class="cards"><div class="card"><div class="label">Viagens no mês</div><div class="num">48</div><div>+12% vs. mês anterior</div></div><div class="card"><div class="label">Faturamento</div><div class="num">R$ 86.420</div><div>+8,4% no período</div></div><div class="card"><div class="label">Veículos ativos</div><div class="num">12</div><div>2 em manutenção</div></div><div class="card"><div class="label">CT-es emitidos</div><div class="num">126</div><div>98% processados</div></div></div>
-<div class="grid"><section class="panel"><h2>Últimas viagens</h2><table><tr><th>Viagem</th><th>Motorista</th><th>Destino</th><th>Status</th></tr><tr><td>#V-1048</td><td>João Oliveira</td><td>Curitiba → São Paulo</td><td><span class="status">Em andamento</span></td></tr><tr><td>#V-1047</td><td>Carlos Mendes</td><td>Cascavel → Londrina</td><td><span class="status">Concluída</span></td></tr><tr><td>#V-1046</td><td>Marcos Silva</td><td>Foz → Curitiba</td><td><span class="status">Em andamento</span></td></tr><tr><td>#V-1045</td><td>Rafael Souza</td><td>Toledo → Maringá</td><td><span class="status">Programada</span></td></tr></table></section><section class="panel"><h2>Resumo da frota</h2><div class="label">Disponibilidade</div><div class="bar"><div class="fill"></div></div><p><b>72%</b></p><div class="label">8 disponíveis · 2 em viagem · 2 manutenção</div><h2 style="margin-top:28px">Custos do mês</h2><div class="num">R$ 31.780</div><div class="label">Combustível + manutenção</div></section></div>
-<div class="notice"><b>AMBIENTE DE DEMONSTRAÇÃO</b> — todos os dados exibidos são fictícios. Nenhum dado do Supabase ou do programa Python do PC é utilizado.</div></main></div></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CW Transportadora — Dashboard Demo</title>
+<style>
+:root{--navy:#0d1b2a;--navy2:#12263d;--blue:#1976f3;--text:#14243b;--muted:#718096;--line:#e6edf5;--bg:#f5f8fc}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}
+.app{min-height:100vh;display:flex}.sidebar{width:274px;flex:0 0 274px;background:linear-gradient(180deg,#0c1a2b,#10243a);color:#dce7f5;display:flex;flex-direction:column}
+.brand{height:88px;padding:20px 25px;display:flex;align-items:center;gap:11px;border-bottom:1px solid #ffffff12}.truck{width:40px;height:40px;border-radius:11px;background:#1686f8;display:grid;place-items:center;color:white;font-size:22px}.brand b{display:block;color:#fff;font-size:18px;letter-spacing:-.4px}.brand small{color:#8fb5e5;font-size:10px}
+.nav{padding:18px 14px}.nav a{height:48px;display:flex;align-items:center;gap:13px;padding:0 16px;margin:4px 0;border-radius:9px;color:#c8d5e5;text-decoration:none;font-size:14px;font-weight:500}.nav a:hover{background:#ffffff0d;color:#fff}.nav a.active{background:linear-gradient(90deg,#1976f3,#1671eb);color:#fff;box-shadow:0 5px 14px #006df033}.ico{width:20px;text-align:center;font-size:17px}
+.sidebar-bottom{margin-top:auto;padding:20px 26px;border-top:1px solid #ffffff12;color:#9eb0c5;font-size:11px}.online{color:#2dd58a;margin-bottom:7px}.online:before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#20d48a;margin-right:8px}
+.main{flex:1;min-width:0}.topbar{height:88px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 28px;gap:22px}.search{width:445px;height:45px;border:0;background:#f3f7fc;border-radius:10px;display:flex;align-items:center;padding:0 16px;color:#7790ac;font-size:13px}.search span{font-size:19px;margin-right:11px}.top-spacer{flex:1}.bell{font-size:22px;position:relative;margin-right:10px}.dot{position:absolute;top:-5px;right:-6px;background:#f33;color:#fff;font-size:9px;width:17px;height:17px;border-radius:50%;display:grid;place-items:center;border:2px solid white}.account{display:flex;align-items:center;gap:10px;padding-left:18px;border-left:1px solid var(--line)}.avatar{width:38px;height:38px;border-radius:50%;background:#e7eef7;display:grid;place-items:center;font-size:19px}.account b{font-size:13px;font-weight:600}.account small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.content{padding:28px;max-width:1550px;margin:auto}.title-row{display:flex;align-items:center;margin-bottom:25px}.title-icon{width:43px;height:43px;border-radius:12px;background:#e7f1ff;color:#1675f3;display:grid;place-items:center;font-size:22px;margin-right:14px}.title-row h1{font-size:29px;margin:0;letter-spacing:-.7px}.title-row p{margin:4px 0 0;color:var(--muted);font-size:13px}.date{margin-left:auto;height:43px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:0 15px;display:flex;align-items:center;gap:10px;font-size:13px;box-shadow:0 2px 8px #162c4506}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:17px}.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;min-height:146px;padding:20px;position:relative;overflow:hidden}.kpi .kicon{width:43px;height:43px;border-radius:50%;display:grid;place-items:center;font-size:20px;margin-bottom:11px}.blue{background:#e5f0ff;color:#1777ef}.green{background:#e3f8ef;color:#08a968}.orange{background:#fff0dd;color:#f28b16}.purple{background:#eee5ff;color:#7540df}.klabel{font-size:12px;color:#5f7592}.value{font-size:25px;font-weight:750;margin-top:5px;letter-spacing:-.5px}.trend{font-size:11px;color:#20a46a;margin-top:7px}.trend.neutral{color:#526983}.spark{position:absolute;right:18px;bottom:24px;font-size:28px;color:#8ebdf5}
+.grid{display:grid;grid-template-columns:minmax(0,2.05fr) minmax(300px,.95fr);gap:18px;margin-top:18px}.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;box-shadow:0 2px 8px #17324b05}.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:17px}.panel-title{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700}.panel-title .mini{color:#1675f3;font-size:18px}.link{font-size:12px;color:#1675f3;text-decoration:none}
+table{width:100%;border-collapse:collapse;font-size:12px}th{background:#f6f9fd;color:#516985;font-weight:650;text-align:left;padding:11px 10px}td{padding:12px 10px;border-bottom:1px solid #edf2f7;color:#304a67}tr:last-child td{border-bottom:0}.trip{font-weight:700;color:#0e3970}.badge{display:inline-block;border-radius:20px;padding:5px 9px;font-size:10px;font-weight:650}.doing{background:#e4f1ff;color:#1474e7}.done{background:#dcf8ea;color:#0a9b62}.planned{background:#eee4ff;color:#7741dc}
+.fleet-chart{display:flex;align-items:center;gap:23px}.donut{width:135px;height:135px;border-radius:50%;background:conic-gradient(#0bb878 0 67%,#ffb52e 67% 84%,#cdd9e6 84% 100%);position:relative;flex:0 0 auto}.donut:after{content:"";position:absolute;inset:27px;background:#fff;border-radius:50%}.donut-text{position:absolute;z-index:1;inset:0;display:grid;place-content:center;text-align:center}.donut-text b{font-size:21px}.donut-text span{font-size:10px;color:var(--muted)}.legend{font-size:11px;line-height:2.5;color:#536b87}.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px}.lgreen{background:#0bb878}.lorange{background:#ffb52e}.lgray{background:#cdd9e6}
+.cost{margin-top:20px;padding:16px;background:#edf6ff;border:1px solid #d8eaff;border-radius:10px;position:relative}.cost .small{font-size:11px;color:#5b7390}.cost .big{font-size:25px;font-weight:750;margin:5px 0}.cost .change{position:absolute;right:16px;top:39px;color:#08a968;font-size:11px}
+.bottom{display:grid;grid-template-columns:minmax(0,2.05fr) minmax(300px,.95fr);gap:18px;margin-top:18px}.map{height:205px;border-radius:9px;overflow:hidden;position:relative;background:linear-gradient(145deg,#e6f0e8,#f6f2e5);border:1px solid #e1e8e7}.road{position:absolute;height:6px;background:#2482f2;left:8%;right:38%;top:53%;transform:rotate(-9deg);border-radius:5px;box-shadow:0 0 0 3px #fff8}.city{position:absolute;font-size:11px;font-weight:700;color:#31506c}.c1{left:10%;top:45%}.c2{right:16%;top:30%}.pin{position:absolute;width:15px;height:15px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#f04a48}.p1{left:11%;top:48%}.p2{right:18%;top:33%}.route-info{display:flex;gap:18px;margin-top:12px}.route-card{flex:1;border:1px solid var(--line);border-radius:9px;padding:12px}.route-card b{font-size:13px}.route-card span{display:block;font-size:11px;color:var(--muted);margin-top:4px}
+.demo{background:#e9f8f0;border:1px solid #cceedd;border-radius:10px;padding:17px}.demo-title{font-weight:700;font-size:14px;color:#137a4f;margin-bottom:8px}.demo p{font-size:11px;color:#477263;line-height:1.6;margin:0}.welcome{margin-top:20px;font-size:14px;font-weight:700}.welcome small{display:block;font-weight:400;color:var(--muted);margin-top:5px}
+@media(max-width:1100px){.sidebar{width:220px;flex-basis:220px}.kpis{grid-template-columns:repeat(2,1fr)}.grid,.bottom{grid-template-columns:1fr}.search{width:340px}}
+@media(max-width:700px){.sidebar{display:none}.content{padding:18px}.topbar{padding:0 18px}.search{width:100%}.account{display:none}.kpis{grid-template-columns:1fr}.date{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="truck">🚚</div><div><b>CW Transportadora</b><small>GESTÃO DE TRANSPORTE</small></div></div>
+  <nav class="nav">
+    <a class="active"><span class="ico">⌂</span>Dashboard</a>
+    <a><span class="ico">👥</span>Clientes</a>
+    <a><span class="ico">▣</span>Notas / CT-e</a>
+    <a><span class="ico">🚚</span>Viagens</a>
+    <a><span class="ico">▣</span>Frota</a>
+    <a><span class="ico">⛽</span>Combustível</a>
+    <a><span class="ico">🔧</span>Manutenção</a>
+    <a><span class="ico">R$</span>Financeiro</a>
+    <a><span class="ico">♟</span>Funcionários</a>
+    <a><span class="ico">▥</span>Relatórios</a>
+  </nav>
+  <div class="sidebar-bottom"><div class="online">Sistema Online</div>CW Transportadora Demo v2.9</div>
+</aside>
+<section class="main">
+<header class="topbar">
+  <div class="search"><span>⌕</span>Buscar viagens, notas, clientes...</div><div class="top-spacer"></div>
+  <div class="bell">♧<span class="dot">3</span></div>
+  <div class="account"><div class="avatar">👤</div><div><b>Administrador Demo⌄</b><small>Sistema</small></div></div>
+</header>
+<main class="content">
+  <div class="title-row"><div class="title-icon">▦</div><div><h1>Dashboard</h1><p>Visão geral da operação da sua transportadora</p></div><div class="date">▣ &nbsp; Abril 2025 &nbsp;⌄</div></div>
+  <section class="kpis">
+    <div class="kpi"><div class="kicon blue">🚚</div><div class="klabel">Viagens no mês</div><div class="value">48</div><div class="trend">↑ +12% <span style="color:#718096">vs. mês anterior</span></div><div class="spark">╱╲╱</div></div>
+    <div class="kpi"><div class="kicon green">$</div><div class="klabel">Faturamento</div><div class="value">R$ 86.420</div><div class="trend">↑ +8,4% <span style="color:#718096">no período</span></div><div class="spark" style="color:#72d9b2">▂▅▇</div></div>
+    <div class="kpi"><div class="kicon orange">🔧</div><div class="klabel">Veículos ativos</div><div class="value">12</div><div class="trend neutral">2 em manutenção</div><div class="spark" style="color:#ffc777">▰</div></div>
+    <div class="kpi"><div class="kicon purple">▤</div><div class="klabel">CT-es emitidos</div><div class="value">126</div><div class="trend neutral">98% processados</div><div class="spark" style="color:#c7a7ff">▤</div></div>
+  </section>
+  <div class="grid">
+    <section class="panel"><div class="panel-head"><div class="panel-title"><span class="mini">🚚</span>Últimas viagens</div><a class="link" href="#">Ver todas →</a></div>
+      <table><thead><tr><th># Viagem</th><th>Motorista</th><th>Destino</th><th>Status</th><th>Data</th></tr></thead><tbody>
+      <tr><td class="trip">#V-1048</td><td>João Oliveira</td><td>Curitiba → São Paulo</td><td><span class="badge doing">Em andamento</span></td><td>24/04/2025 08:15</td></tr>
+      <tr><td class="trip">#V-1047</td><td>Carlos Mendes</td><td>Cascavel → Londrina</td><td><span class="badge done">Concluída</span></td><td>23/04/2025 16:42</td></tr>
+      <tr><td class="trip">#V-1046</td><td>Marcos Silva</td><td>Foz → Curitiba</td><td><span class="badge doing">Em andamento</span></td><td>23/04/2025 10:20</td></tr>
+      <tr><td class="trip">#V-1045</td><td>Rafael Souza</td><td>Toledo → Maringá</td><td><span class="badge planned">Programada</span></td><td>22/04/2025 14:30</td></tr>
+      <tr><td class="trip">#V-1044</td><td>Luciano Pereira</td><td>São Paulo → Campinas</td><td><span class="badge done">Concluída</span></td><td>22/04/2025 09:12</td></tr>
+      </tbody></table>
+    </section>
+    <section class="panel"><div class="panel-head"><div class="panel-title"><span class="mini">🚚</span>Resumo da frota</div></div>
+      <div class="fleet-chart"><div class="donut"><div class="donut-text"><b>12</b><span>veículos</span></div></div><div class="legend"><div><i class="lgreen"></i>Disponíveis &nbsp; 8 (67%)</div><div><i class="lorange"></i>Em manutenção &nbsp;2 (17%)</div><div><i class="lgray"></i>Indisponíveis &nbsp;2 (17%)</div></div></div>
+      <div class="cost"><div class="small">⛽ &nbsp;Custos do mês</div><div class="big">R$ 31.780</div><div class="small">Combustível + manutenção</div><div class="change">↓ -5%<br><span style="color:#718096">vs. mês anterior</span></div></div>
+    </section>
+  </div>
+  <div class="bottom">
+    <section class="panel"><div class="panel-head"><div class="panel-title"><span class="mini">⌖</span>Operações em andamento</div></div>
+      <div class="map"><div class="road"></div><div class="city c1">Cascavel</div><div class="city c2">São Paulo</div><div class="pin p1"></div><div class="pin p2"></div></div>
+      <div class="route-info"><div class="route-card"><b>🚚 V-1047 · Carlos Mendes</b><span>Cascavel → Londrina · 423 km · 5h 20min</span></div><div class="route-card"><b>🚛 Scania R450</b><span>Placa: ABC-1234 · Em andamento</span></div></div>
+    </section>
+    <section class="panel"><div class="panel-head"><div class="panel-title"><span class="mini">◉</span>Ambiente de demonstração</div></div>
+      <div class="demo"><div class="demo-title">✓ &nbsp;Este é um ambiente de demonstração.</div><p>Todos os dados exibidos são fictícios. Nenhum dado do Supabase ou do programa Python do PC é utilizado.</p></div>
+      <div class="welcome">Bem-vindo à CW Transportadora! 👋<small>Aqui você tem uma visão completa da sua operação.</small></div>
+    </section>
+  </div>
+</main>
+</section>
+</div>
+</body>
+</html>
