@@ -254,7 +254,7 @@ function editMan(i){const r=demoData.Manutenção[i];const s=prompt('Status da o
 function deleteMan(i){if(!confirm('Excluir '+demoData.Manutenção[i].codigo+' da demonstração?'))return;demoData.Manutenção.splice(i,1);renderManutencao();showToast('Ordem excluída da demonstração')}
 function filterMan(){const q=(document.getElementById('manSearch')?.value||'').toLowerCase();document.querySelectorAll('#manTable tbody tr').forEach(tr=>tr.style.display=tr.innerText.toLowerCase().includes(q)?'':'none')}
 
-<div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()"><div class="detail-modal"><div class="detail-head"><div><h2 id="detailTitle">Detalhes</h2><p id="detailSubtitle">Informações do registro</p></div><button class="detail-close" onclick="closeDetail()">×</button></div><div class="detail-body" id="detailBody"></div></div></div>
+
 function renderFrota(){
  const rows=demoData.Frota;
  document.querySelector('.content').innerHTML='<div class="title-row"><div class="title-icon">▣</div><div><h1>Frota</h1><p>Controle de veículos, disponibilidade e quilometragem</p></div><button class="date" onclick="toggleFrotaForm()">＋ Novo veículo</button></div>'+
