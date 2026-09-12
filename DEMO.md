@@ -1,0 +1,1 @@
+Demo visual independente. Abra web/demo.html. Não usa banco ou dados reais.

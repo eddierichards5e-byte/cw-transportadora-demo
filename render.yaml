@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: cw-transportadora-web-demo
+    runtime: python
+    buildCommand: pip install -r web/requirements.txt
+    startCommand: uvicorn web.app:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    plan: free
+    envVars:
+      - key: CW_ENV
+        value: production
+      - key: CW_DISABLE_DOCS
+        value: "1"
+      - key: CW_HTTPS_ONLY
+        value: "1"
+      - key: CW_WEB_SECRET
+        generateValue: true
+      - key: CW_DATABASE_URL
+        sync: false
